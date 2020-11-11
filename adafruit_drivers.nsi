@@ -5,7 +5,7 @@
 !include WinVer.nsh   # Windows version detection.
 !include x64.nsh      # X86/X64 version detection.
 
-!define VERSION 2.4.0.0
+!define VERSION 2.5.0.0
 
 # Set attributes that describe the installer.
 Icon "Assets\adafruit.ico"
@@ -23,7 +23,7 @@ VIAddVersionKey /LANG=1033 "ProductName" "Adafruit Board Drivers"
 VIAddVersionKey /LANG=1033 "CompanyName" "Adafruit Industries"
 VIAddVersionKey /LANG=1033 "LegalCopyright" "Adafruit Industries"
 VIAddVersionKey /LANG=1033 "FileDescription" "All in one installer for Adafruit's board drivers."
-VIAddVersionKey /LANG=1033 "FileVersion" "2.4.0.0"
+VIAddVersionKey /LANG=1033 "FileVersion" "2.5.0.0"
 VIProductVersion ${VERSION}
 VIFileVersion ${VERSION}
 
@@ -68,7 +68,7 @@ Section
   ${EndIf}
 SectionEnd
 
-Section "All other Adafruit boards, and Teensy 3.6" USBSER_BOARDS
+Section "All other Adafruit boards, and third-party CircuitPython boards" USBSER_BOARDS
   # Use dpinst to install the driver.
   # Note the following options are specified:
   #  /sw = silent mode, hide the installer but NOT the OS prompts (critical!)
