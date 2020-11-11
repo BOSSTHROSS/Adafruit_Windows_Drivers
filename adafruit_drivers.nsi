@@ -87,8 +87,12 @@ Section "Feather WICED"
   ExecWait '"$dpinst" /sw /path "$INSTDIR\Drivers\Adafruit_Feather_WICED_DFU"'
 SectionEnd
 
-Section "Trinket / Pro Trinket / Gemma (USBtinyISP)"
+Section "Trinket / Pro Trinket / Gemma (USBtinyISP)" USBTINY_LIBUSB0
   ExecWait '"$dpinst" /sw /path "$INSTDIR\Drivers\USBtinyISP"'
+SectionEnd
+
+Section /o "(alt driver) Trinket / Pro Trinket / Gemma (USBtinyISP)" USBTINY_WINUSB
+  ExecWait '"$dpinst" /sw /path "$INSTDIR\Drivers\USBtinyISP_WinUSB"'
 SectionEnd
 
 Section /o "Arduino Gemma" ARDUINO_GEMMA
@@ -131,4 +135,23 @@ Function .onInit
     ${HideSection} ${USBSER_BOARDS}
     ${HideSection} ${ARDUINO_GEMMA}
   ${EndIf}
+FunctionEnd
+
+Function .onSelChange
+  IntCmp $0 ${USBTINY_LIBUSB0} libusb
+  IntCmp $0 ${USBTINY_WINUSB} winusb
+  Return
+  # Deselect WinUSB driver
+  libusb:
+  SectionSetFlags ${USBTINY_WINUSB} 0
+  Return
+  # Deselect LibUSB0 driver
+  # Display warning about the USBtinyISB WinUSB driver
+  winusb:
+  SectionSetFlags ${USBTINY_LIBUSB0} 0
+  MessageBox MB_OK "This USBtinyISP driver uses WinUSB instead of libusb0.$\n\
+  This driver is compatible with new avrdude versions.$\n\
+  This driver is not compatible with the WinAVR avrdude version.$\n\
+  Use the other driver if you are using WinAVR."
+  Return
 FunctionEnd

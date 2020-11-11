@@ -1,0 +1,90 @@
+; handwritten WinUSB driver INF for the USBtinyISP programmer
+; 
+; Copyright (c) 2020 Amavect. All rights reserved.
+; 
+; Permission is hereby granted, free of charge, to any person obtaining a copy
+; of this software and associated documentation files (the "Software"), to deal
+; in the Software without restriction, including without limitation the rights
+; to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+; copies of the Software, and to permit persons to whom the Software is
+; furnished to do so, subject to the following conditions:
+; 
+; The above copyright notice and this permission notice shall be included in all
+; copies or substantial portions of the Software.
+; 
+; THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+; IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+; FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+; AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+; LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+; OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+; SOFTWARE.
+
+[Strings]
+DeviceName = "USBtiny"
+VendorName = "Adafruit Industries"
+SourceName = "USBtiny Install Disk"
+DeviceID   = "VID_1781&PID_0C9F"
+DeviceGUID = "{933CF80B-FABF-4AA1-8AB0-384AB4CA35FA}"
+
+[Version]
+Signature   = "$Windows NT$"
+; https://docs.microsoft.com/en-us/windows-hardware/drivers/usbcon/automatic-installation-of-winusb
+Class=USBDevice ; device setup class name
+ClassGuid={88BAE032-5A81-49f0-BC3D-A4FF138216D6} ; device setup class GUID
+Provider    = %VendorName%
+DriverVer   = 03/07/2020, 1.0.0.0
+CatalogFile = usbtiny_winusb.cat ; CAT file needed for a signed driver package
+DriverPackageDisplayName = %DeviceName%
+
+; Manufacturer/Models sections
+[Manufacturer]
+%VendorName%=Devices,NTx86,NTamd64,NTIA64
+
+; Vendor and Product ID Definitions
+[Devices.NTx86]
+%DeviceName%=USBtiny, USB\%DeviceID%
+[Devices.NTamd64]
+%DeviceName%=USBtiny, USB\%DeviceID%
+[Devices.NTIA64]
+%DeviceName%=USBtiny, USB\%DeviceID%
+
+; Device Installation
+[USBtiny.NTx86]
+Include=winusb.inf
+Needs=WINUSB.NT
+[USBtiny.NTamd64]
+Include=winusb.inf
+Needs=WINUSB.NT
+[USBtiny.NTia64]
+Include=winusb.inf
+Needs=WINUSB.NT
+
+[USBtiny.NTx86.HW]
+AddReg = USBtiny_AddReg
+[USBtiny.NTamd64.HW]
+AddReg = USBtiny_AddReg
+[USBtiny.NTia64.HW]
+AddReg = USBtiny_AddReg
+
+[USBtiny_AddReg]
+HKR,,SurpriseRemovalOK,0x00010001,1
+; https://docs.microsoft.com/en-us/windows-hardware/drivers/install/guid-devinterface-usb-device
+HKR,,DeviceInterfaceGUIDs,0x10000,"{A5DCBF10-6530-11D2-901F-00C04FB951ED}"
+
+[USBtiny.NTx86.Services]
+Include=winusb.inf
+AddService=WinUSB,0x00000002,WinUSB_ServiceInstall
+[USBtiny.NTamd64.Services]
+Include=winusb.inf
+AddService=WinUSB,0x00000002,WinUSB_ServiceInstall
+[USBtiny.NTia64.Services]
+Include=winusb.inf
+AddService=WinUSB,0x00000002,WinUSB_ServiceInstall
+
+[WinUSB_ServiceInstall]
+DisplayName     = "WinUSB Device"
+ServiceType     = 1
+StartType       = 3
+ErrorControl    = 1
+ServiceBinary   = %12%\WinUSB.sys
